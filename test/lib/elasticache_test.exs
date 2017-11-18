@@ -144,13 +144,23 @@ defmodule ExAws.ElastiCacheTest do
   test "delete_replication_group no optional params" do
     expected = build_request(:delete_replication_group,
       %{
-        "ReplicationGroupId" => "myRepoGroup"
+        "ReplicationGroupId" => "MyRepGroup"
       })
-    assert expected == ElastiCache.delete_replication_group("myRepoGroup")
+    assert expected == ElastiCache.delete_replication_group("MyRepGroup")
   end
 
   test "delete_replication_group with optional params" do
-    # TODO
+    expected = build_request(:delete_replication_group,
+      %{
+        "ReplicationGroupId" => "MyRepGroup",
+        "FinalSnapshotIdentifier" => "SnapshotIdentifier",
+        "RetainPrimaryCluster" => false
+      })
+
+    assert expected == ElastiCache.delete_replication_group("MyRepGroup", [
+      final_snapshot_identifier: "SnapshotIdentifier",
+      retain_primary_cluster: false
+      ])
   end
 
   test "describe_replication_groups no optional params" do

@@ -107,22 +107,22 @@ defmodule ExAws.ElastiCache do
 
   ## Examples:
 
-        iex> ExAws.ElastiCache.create_replication_group("myRepoGroup", "My Repo Group")
+        iex> ExAws.ElastiCache.create_replication_group("myRepGroup", "My Rep Group")
         %ExAws.Operation.Query{action: :create_replication_group,
         params: %{
           "Action" => "CreateReplicationGroup",
-          "ReplicationGroupId" => "myRepoGroup",
-          "ReplicationGroupDescription" => "My Repo Group",
+          "ReplicationGroupId" => "myRepGroup",
+          "ReplicationGroupDescription" => "My Rep Group",
           "Version" => "2015-02-02"},
         path: "/",
         service: :elasticache}
 
-        iex> ExAws.ElastiCache.create_replication_group("myRepoGroup", "My Repo Group", [node_group_configurations: [{"us-east-1a", ["us-east-1b", "us-east-1c"], 2, 0}, {"us-east-1b", ["us-east-1a", "us-east-1c"], 2, 2}]])
+        iex> ExAws.ElastiCache.create_replication_group("myRepGroup", "My Rep Group", [node_group_configurations: [{"us-east-1a", ["us-east-1b", "us-east-1c"], 2, 0}, {"us-east-1b", ["us-east-1a", "us-east-1c"], 2, 2}]])
         %ExAws.Operation.Query{action: :create_replication_group,
         params: %{
           "Action" => "CreateReplicationGroup",
-          "ReplicationGroupId" => "myRepoGroup",
-          "ReplicationGroupDescription" => "My Repo Group",
+          "ReplicationGroupId" => "myRepGroup",
+          "ReplicationGroupDescription" => "My Rep Group",
           "NodeGroupConfigurations.NodeGroupConfiguration.1.PrimaryAvailabilityZone" => "us-east-1a",
           "NodeGroupConfigurations.NodeGroupConfiguration.1.ReplicaAvailabilityZones.AvailabilityZone.1" => "us-east-1b",
           "NodeGroupConfigurations.NodeGroupConfiguration.1.ReplicaAvailabilityZones.AvailabilityZone.2" => "us-east-1c",
@@ -133,7 +133,8 @@ defmodule ExAws.ElastiCache do
           "NodeGroupConfigurations.NodeGroupConfiguration.2.ReplicaAvailabilityZones.AvailabilityZone.2" => "us-east-1c",
           "NodeGroupConfigurations.NodeGroupConfiguration.2.ReplicaCount" => 2,
           "NodeGroupConfigurations.NodeGroupConfiguration.2.Slots" => 2,
-          "Version" => "2015-02-02"},
+          "Version" => "2015-02-02"
+        },
         path: "/",
         service: :elasticache}
 
@@ -190,7 +191,8 @@ defmodule ExAws.ElastiCache do
         params: %{
           "Action" => "DeleteCacheCluster",
           "CacheClusterId" => "Test",
-          "Version" => "2015-02-02"},
+          "Version" => "2015-02-02"
+        },
         path: "/",
         service: :elasticache}
 
@@ -200,7 +202,8 @@ defmodule ExAws.ElastiCache do
           "Action" => "DeleteCacheCluster",
           "CacheClusterId" => "Test",
           "FinalSnapshotIdentifier" => "finalSnapshot",
-          "Version" => "2015-02-02"},
+          "Version" => "2015-02-02"
+        },
         path: "/",
         service: :elasticache}
 
@@ -221,7 +224,15 @@ defmodule ExAws.ElastiCache do
 
   ## Examples:
 
-        iex>
+        iex> ExAws.ElastiCache.delete_replication_group("myRepGroup")
+        %ExAws.Operation.Query{action: :delete_replication_group,
+        params: %{
+          "Action" => "DeleteReplicationGroup",
+          "ReplicationGroupId" => "myRepGroup",
+          "Version" => "2015-02-02"
+        },
+        path: "/",
+        service: :elasticache}
 
   """
   @type delete_replication_group :: [
@@ -247,7 +258,8 @@ defmodule ExAws.ElastiCache do
       %ExAws.Operation.Query{action: :describe_cache_clusters,
       params: %{
         "Action" => "DescribeCacheClusters",
-        "Version" => "2015-02-02"},
+        "Version" => "2015-02-02"
+      },
       path: "/",
       service: :elasticache}
 
@@ -257,7 +269,8 @@ defmodule ExAws.ElastiCache do
         "Action" => "DescribeCacheClusters",
         "MaxRecords" => 100,
         "ShowCacheNodeInfo" => false,
-        "Version" => "2015-02-02"},
+        "Version" => "2015-02-02"
+      },
       path: "/",
       service: :elasticache}
   """
@@ -286,7 +299,8 @@ defmodule ExAws.ElastiCache do
       %ExAws.Operation.Query{action: :describe_replication_groups,
       params: %{
         "Action" => "DescribeReplicationGroups",
-        "Version" => "2015-02-02"},
+        "Version" => "2015-02-02"
+      },
       path: "/",
       service: :elasticache}
 
@@ -296,7 +310,8 @@ defmodule ExAws.ElastiCache do
         "Action" => "DescribeReplicationGroups",
         "MaxRecords" => 100,
         "ReplicationGroupId" => "my-replication-group",
-        "Version" => "2015-02-02"},
+        "Version" => "2015-02-02"
+      },
       path: "/",
       service: :elasticache}
   """
