@@ -8,12 +8,12 @@ defmodule ExAws.ElastiCache do
   ```elixir
   alias ExAws.ElastiCache
 
-  ElastiCache.create_cache_cluster("myMemcachedCluster", "cache.t3.medium", "memcached", 1,
+  ElastiCache.create_cache_cluster("MyMemcachedCluster", "cache.t3.medium", "memcached", 1,
     [preferred_availability_zones: ["us-east-1a"]]
   ) |> ExAws.request
 
   ElastiCache.describe_cache_clusters(
-    [cache_cluster_id: "myMemcachedCluster", show_cache_node_info: true]
+    [cache_cluster_id: "MyMemcachedCluster", show_cache_node_info: true]
   ) |> ExAws.request
   ```
   """
@@ -34,6 +34,33 @@ defmodule ExAws.ElastiCache do
       replica_count :: integer,
       slots :: binary
     }
+
+  @doc """
+  Authorize network ingress to a cache security group.
+
+  Doc: http://docs.aws.amazon.com/AmazonElastiCache/latest/APIReference/API_AuthorizeCacheSecurityGroupIngress.html
+
+  TODO: Examples
+  """
+  @spec authorize_cache_security_group_ingress(cache_security_group_name :: binary, ec2_security_group_name :: binary, ec2_security_group_owner_id :: binary) :: ExAws.Operation.Query.t
+  def authorize_cache_security_group_ingress(cache_security_group_name, ec2_security_group_name, ec2_security_group_owner_id) do
+    [ {"CacheSecurityGroupName", cache_security_group_name},
+      {"EC2SecurityGroupName", ec2_security_group_name},
+      {"EC2SecurityGroupOwnerId", ec2_security_group_owner_id} ]
+      |> build_request(:authorize_cache_security_group_ingress)
+  end
+  @doc """
+  Makes a copy of an existing snapshot.
+
+  Doc: http://docs.aws.amazon.com/AmazonElastiCache/latest/APIReference/API_CopySnapshot.html
+  TODO: Examples
+  """
+  @spec copy_snapshot(source_snapshot_name :: binary, target_snapshot_name :: binary) :: ExAws.Operation.Query.t
+  def copy_snapshot(source_snapshot_name, target_snapshot_name) do
+    [ {"SourceSnapshotName", source_snapshot_name},
+      {"TargetSnapshotName", target_snapshot_name}]
+      |> build_request(:copy_snapshot)
+  end
 
   @doc """
   Creates a cache cluster. All nodes in the cache cluster run the same protocol-
@@ -224,11 +251,11 @@ defmodule ExAws.ElastiCache do
 
   ## Examples:
 
-        iex> ExAws.ElastiCache.delete_replication_group("myRepGroup")
+        iex> ExAws.ElastiCache.delete_replication_group("MyRepGroup")
         %ExAws.Operation.Query{action: :delete_replication_group,
         params: %{
           "Action" => "DeleteReplicationGroup",
-          "ReplicationGroupId" => "myRepGroup",
+          "ReplicationGroupId" => "MyRepGroup",
           "Version" => "2015-02-02"
         },
         path: "/",
@@ -243,6 +270,28 @@ defmodule ExAws.ElastiCache do
   def delete_replication_group(replication_group_id, opts \\ []) do
     [ {"ReplicationGroupId", replication_group_id} | opts ]
     |> build_request(:delete_replication_group)
+  end
+
+  @doc """
+  Deletes an existing snapshot
+
+  Doc: http://docs.aws.amazon.com/AmazonElastiCache/latest/APIReference/API_DeleteSnapshot.html
+
+  ## Examples:
+
+        iex> ExAws.ElastiCache.delete_snapshot("MySnapshotName")
+        %ExAws.Operation.Query{action: :delete_snapshot,
+        params: %{
+          "Action" => "DeleteSnapshot",
+          "SnapshotName" => "MySnapshotName",
+          "Version" => "2015-02-02"
+        },
+        path: "/",
+        service: :elasticache}
+  """
+  @spec delete_snapshot(snapshot_name :: binary) :: ExAws.Operation.Query.t
+  def delete_snapshot(snapshot_name) do
+    [{"SnapshotName", snapshot_name}] |> build_request(:delete_snapshot)
   end
 
   @doc """
@@ -286,6 +335,25 @@ defmodule ExAws.ElastiCache do
     opts |> build_request(:describe_cache_clusters)
   end
 
+  @doc """
+  Returns a list of the available cache engines and their versions.
+
+  Doc: http://docs.aws.amazon.com/AmazonElastiCache/latest/APIReference/API_DescribeCacheEngineVersions.html
+  TODO: Examples
+  """
+  @type describe_cache_engine_versions :: [
+    cache_parameter_group_family: binary,
+    default_only: boolean,
+    engine: binary,
+    engine_version: binary,
+    marker: binary,
+    max_records: integer
+  ]
+  @spec describe_cache_engine_versions(opts :: describe_cache_engine_versions) :: ExAws.Operation.Query.t
+  def describe_cache_engine_versions(opts \\ []) do
+    opts |> build_request(:describe_cache_engine_versions)
+  end
+
 
   @doc """
   Returns information about a particular replication group. If no identifier is specified,
@@ -325,6 +393,23 @@ defmodule ExAws.ElastiCache do
     opts |> build_request(:describe_replication_groups)
   end
 
+  @doc """
+  Reboots some, or all, of the cache nodes in the provisioned cluster. This operation applies
+  any modified cache parameter groups to the cluster.
+
+  Doc: http://docs.aws.amazon.com/AmazonElastiCache/latest/APIReference/API_RebootCacheCluster.html
+
+  TODO: Examples
+  """
+  @spec reboot_cache_cluster(cache_cluster_id :: binary, cache_node_ids_to_reboot :: nonempty_list(binary)) :: ExAws.Operation.Query.t
+  def reboot_cache_cluster(cache_cluster_id, cache_node_ids_to_reboot) do
+    opts = [
+      cache_cluster_id: cache_cluster_id,
+      cache_node_ids_to_reboot: cache_node_ids_to_reboot
+    ]
+
+    opts |> build_request(:reboot_cache_cluster)
+  end
   ####################
   # Helper Functions #
   ####################
@@ -349,9 +434,12 @@ defmodule ExAws.ElastiCache do
     }
   end
 
+  defp format_param({:cache_node_ids_to_reboot, cache_node_ids_to_reboot}) do
+    cache_node_ids_to_reboot |> format(prefix: "CacheNodeIdsToReboot.CacheNodeId")
+  end
+
   defp format_param({:cache_security_group_names, cache_security_group_names}) do
-    cache_security_group_names
-    |> format(prefix: "CacheSecurityGroupNames.CacheSecurityGroupName")
+    cache_security_group_names |> format(prefix: "CacheSecurityGroupNames.CacheSecurityGroupName")
   end
 
   defp format_param({:node_group_configurations, node_group_configurations}) do
@@ -370,23 +458,19 @@ defmodule ExAws.ElastiCache do
   end
 
   defp format_param({:preferred_availability_zones, preferred_availability_zones}) do
-    preferred_availability_zones
-    |> format(prefix: "PreferredAvailabilityZones.PreferredAvailabilityZone")
+    preferred_availability_zones |> format(prefix: "PreferredAvailabilityZones.PreferredAvailabilityZone")
   end
 
   defp format_param({:preferred_cache_cluster_azs, preferred_cache_cluster_azs}) do
-    preferred_cache_cluster_azs
-    |> format(prefix: "PreferredCacheClusterAZs.AvailabilityZone")
+    preferred_cache_cluster_azs |> format(prefix: "PreferredCacheClusterAZs.AvailabilityZone")
   end
 
   defp format_param({:security_group_ids, security_group_ids}) do
-    security_group_ids
-    |> format(prefix: "SecurityGroupIds.SecurityGroupId")
+    security_group_ids |> format(prefix: "SecurityGroupIds.SecurityGroupId")
   end
 
   defp format_param({:snapshot_arns, snapshot_arns}) do
-    snapshot_arns
-    |> format(prefix: "SnapshotArns.SnapshotArn")
+    snapshot_arns |> format(prefix: "SnapshotArns.SnapshotArn")
   end
 
   defp format_param({:tags, tags}) do
