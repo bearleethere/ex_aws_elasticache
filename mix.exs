@@ -27,7 +27,7 @@ defmodule ExAws.ElastiCache.Mixfile do
     [
       {:hackney, ">= 0.0.0", only: [:dev, :test]},
       {:poison, ">= 0.0.0", only: [:dev, :test]},
-      {:ex_aws, "~> 1.1"}
+      {:ex_aws, "~> 2.0"}
     ]
   end
 
