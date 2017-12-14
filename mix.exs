@@ -27,14 +27,14 @@ defmodule ExAws.ElastiCache.Mixfile do
     [
       {:hackney, ">= 0.0.0", only: [:dev, :test]},
       {:poison, ">= 0.0.0", only: [:dev, :test]},
-      {:ex_aws, "~> 2.0"}
+      ex_aws()
     ]
   end
 
-  # defp ex_aws() do
-  #   case System.get_env("AWS") do
-  #     "LOCAL" -> {:ex_aws, path: "../ex_aws"}
-  #     _ -> {:ex_aws, "~> 1.1"}
-  #   end
-  # end
+  defp ex_aws() do
+    case System.get_env("AWS") do
+      "LOCAL" -> {:ex_aws, path: "../ex_aws"}
+      _ -> {:ex_aws, "~> 2.0"}
+    end
+  end
 end
